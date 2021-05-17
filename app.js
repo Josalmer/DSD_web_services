@@ -11,15 +11,16 @@ MongoClient.connect("mongodb://localhost:27017/", { useUnifiedTopology: true }, 
     var dataBase = db.db("domoticaDb");
 
     var logs = dataBase.collection("logs");
-    if (!logs) {
-        logs = dataBase.createCollection("logs");
-    }
+    if (!logs) { logs = dataBase.createCollection("logs"); }
+
     io.sockets.on('connection', (controller) => {
         controller.on('updateTmp', (updateTmp) => {
-            console.log("app.js", updateTmp);
+            console.log(updateTmp);
+            io.sockets.emit("updateTmp", updateTmp);
         });
         controller.on('updateLux', (updateLux) => {
-            console.log("app.js", updateLux);
+            console.log(updateLux);
+            io.sockets.emit("updateLux", updateLux);
         });
     });
 });

@@ -43,12 +43,10 @@
     }
 
     function updateTmp(newTmp) {
-        console.log("updated tmp", newTmp);
         socket.emit('updateTmp', { tmp: newTmp });
     }
 
     function updateLux(newLux) {
-        console.log("updated lux", newLux);
         socket.emit('updateLux', { lux: newLux });
     }
 </script>
