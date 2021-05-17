@@ -31,45 +31,26 @@
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", () => setActionsListener());
+    var socket = io();
 
     function setActionsListener() {
         document.getElementById("update-tmp").addEventListener("click" , () => {
             updateTmp(document.getElementById("tmp-value").value);
         })
+        document.getElementById("update-lux").addEventListener("click" , () => {
+            updateLux(document.getElementById("lux-value").value);
+        })
     }
 
     function updateTmp(newTmp) {
-        console.log(newTmp);
+        console.log("updated tmp", newTmp);
+        socket.emit('updateTmp', { tmp: newTmp });
     }
 
-
-    function actualizarLista(usuarios) {
-        var listContainer = document.getElementById('resultados');
-        listContainer.innerHTML = '';
-        var listElement = document.createElement('ul');
-        listContainer.appendChild(listElement);
-        var num = usuarios.length;
-        for (var i = 0; i < num; i++) {
-            var listItem = document.createElement('li');
-            listItem.innerHTML = JSON.stringify(usuarios[i]);
-            listElement.appendChild(listItem);
-        }
+    function updateLux(newLux) {
+        console.log("updated lux", newLux);
+        socket.emit('updateLux', { lux: newLux });
     }
-
-    var serviceURL = document.URL;
-    var socket = io.connect(serviceURL);
-
-    socket.on('my-address', function (data) {
-        var d = new Date();
-        socket.emit('poner', { host: data.host, port: data.port, time: d });
-        socket.emit('obtener', { host: data.address });
-    });
-    socket.on('obtener', function (data) {
-        actualizarLista(data);
-    });
-    socket.on('disconnect', function () {
-        actualizarLista({});
-    });
 </script>
 
 </html>

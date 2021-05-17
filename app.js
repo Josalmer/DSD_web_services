@@ -14,15 +14,12 @@ MongoClient.connect("mongodb://localhost:27017/", { useUnifiedTopology: true }, 
     if (!logs) {
         logs = dataBase.createCollection("logs");
     }
-    io.sockets.on('connection', (client) => {
-        client.emit('my-address', { host: client.request.connection.remoteAddress, port: client.request.connection.remotePort });
-        client.on('poner', function (data) {
-            logs.insertOne(data, { safe: true }, function (err, result) { });
+    io.sockets.on('connection', (controller) => {
+        controller.on('updateTmp', (updateTmp) => {
+            console.log("app.js", updateTmp);
         });
-        client.on('obtener', function (data) {
-            logs.find(data).toArray(function (err, results) {
-                client.emit('obtener', results);
-            });
+        controller.on('updateLux', (updateLux) => {
+            console.log("app.js", updateLux);
         });
     });
 });
