@@ -1,0 +1,57 @@
+* {
+    font-family:fantasy;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cards {
+    margin-top: 20px;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgb(231, 231, 208);
+}
+
+.emoji {
+    font-size: 30px;
+}
+
+.button {
+    cursor: pointer;
+    padding: 10px;
+    width: 180px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: rgb(231, 231, 208);
+    margin-top: 20px;
+}
+
+.white {
+    background-color: white;
+}
+
+input {
+    width: 80px;
+    font-size: 18px;
+    margin: 0 10px;
+    padding-left: 10px;
+}

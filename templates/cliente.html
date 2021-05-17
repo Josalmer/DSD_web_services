@@ -1,0 +1,68 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="../styles/style.css">
+    <title>Sistema de control doméstico</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <h1>Sistema de control doméstico</h1>
+        <div class="cards">
+            <div class="card">
+                <h2>Sensores</h2>
+                <div class="temp">
+                    <h4><span class="emoji">🌡️</span> Temperatura: <span id="temp-holder">No hay valor</span></h4>
+                </div>
+                <div class="lux">
+                    <h4><span class="emoji">💡</span> Luminosidad: <span id="lux-holder">No hay valor</span></h4>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Control</h2>
+                <div class="temp">
+                    <h4><span class="emoji">🌡️</span> Aire acondicionado: <span id="ac-status">Apagado</span></h4>
+                </div>
+                <div class="lux">
+                    <h4><span class="emoji">💡</span> Persiana: <span id="lux-status">Cerrada</span></h4>
+                </div>
+            </div>
+        </div>
+        <a class="button" target="_blank" href="/">Nuevo cliente</a>
+        <a class="button" target="_blank" href="templates/sensores.html">Formulario sensores</a>
+        <div id="resultados"></div>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+    function actualizarLista(usuarios) {
+        var listContainer = document.getElementById('resultados');
+        listContainer.innerHTML = '';
+        var listElement = document.createElement('ul');
+        listContainer.appendChild(listElement);
+        var num = usuarios.length;
+        for (var i = 0; i < num; i++) {
+            var listItem = document.createElement('li');
+            listItem.innerHTML = JSON.stringify(usuarios[i]);
+            listElement.appendChild(listItem);
+        }
+    }
+
+    var serviceURL = document.URL;
+    var socket = io.connect(serviceURL);
+
+    socket.on('my-address', function (data) {
+        var d = new Date();
+        socket.emit('poner', { host: data.host, port: data.port, time: d });
+        socket.emit('obtener', { host: data.address });
+    });
+    socket.on('obtener', function (data) {
+        actualizarLista(data);
+    });
+    socket.on('disconnect', function () {
+        actualizarLista({});
+    });
+</script>
+
+</html>
