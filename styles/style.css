@@ -14,6 +14,21 @@ a {
     align-items: center;
 }
 
+.menu {
+    background-color: rgb(231, 231, 208);
+    width: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-button {
+    font-weight: bolder;
+    font-size: 1.3em;
+    margin-right: 3em;
+}
+
 .cards {
     margin-top: 20px;
     width: 80%;
@@ -31,11 +46,19 @@ a {
     background-color: rgb(231, 231, 208);
 }
 
+.temp, .lux {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3em;
+}
+
 .emoji {
     font-size: 30px;
 }
 
 .button {
+    font-size: 1.1em;
     cursor: pointer;
     padding: 10px;
     width: 180px;
@@ -47,6 +70,14 @@ a {
 
 .white {
     background-color: white;
+}
+
+.green {
+    background-color: rgb(207, 228, 207);
+}
+
+.red {
+    background-color: rgb(228, 183, 183);
 }
 
 input {

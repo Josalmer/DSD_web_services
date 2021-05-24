@@ -8,7 +8,13 @@
 
 <body>
     <div class="wrapper">
-        <h1>Sistema de control doméstico</h1>
+        <div class="menu">
+            <h1>Sistema de control doméstico</h1>
+            <div class="buttons">
+                <a class="nav-button" target="_blank" href="/">Nuevo cliente</a>
+                <a class="nav-button" target="_blank" href="templates/sensores.html">Formulario sensores</a>
+            </div>
+        </div>
         <div class="cards">
             <div class="card">
                 <h2>Sensores</h2>
@@ -23,20 +29,22 @@
                 <h2>Control</h2>
                 <div class="temp">
                     <h4><span class="emoji">🌡️</span> Aire acondicionado: <span id="ac-status">Apagado  🔴</span></h4>
+                    <button id="ac-toggle-button" class="button green" type="button">Control manual Encender</button>
                 </div>
                 <div class="lux">
                     <h4><span class="emoji">💡</span> Persiana: <span id="lux-status">Cerrada  🔴</span></h4>
+                    <button id="lux-toggle-button" class="button green" type="button">Control manual Abrir</button>
                 </div>
             </div>
         </div>
-        <a class="button" target="_blank" href="/">Nuevo cliente</a>
-        <a class="button" target="_blank" href="templates/sensores.html">Formulario sensores</a>
-        <div id="resultados"></div>
     </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
     var socket = io();
+    document.addEventListener("DOMContentLoaded", () => setClientControls());
+    luxOn = false;
+    acOn = false;
 
     socket.on('updateTmp', (updatedTmp) => {
         var tmpField = document.getElementById("temp-holder");
@@ -48,25 +56,60 @@
         luxField.textContent = updatedLux.value + ' lux';
     });
 
-    socket.on('acOn', () => {
+    socket.on('acOn', () => { toggleAc(true); });
+
+    socket.on('acOff', () => { toggleAc(false); });
+
+    socket.on('openWindow', () => { toggleLux(true); });
+
+    socket.on('closeWindow', () => { toggleLux(false); });
+
+    function setClientControls() {
+        document.getElementById("ac-toggle-button").addEventListener("click", () => toggleAc());
+        document.getElementById("lux-toggle-button").addEventListener("click", () => toggleLux());
+    }
+
+    function toggleAc(action = null) {
         var tmpField = document.getElementById("ac-status");
-        tmpField.textContent = 'Encendido  🟢';
-    });
+        var button = document.getElementById("ac-toggle-button");
+        if (action) {
+            acOn = action;
+        } else {
+            acOn = !acOn;
+        }
+        if (acOn) {
+            tmpField.textContent = 'Encendido  🟢';
+            button.textContent = 'Control manual Apagar';
+            button.classList.remove('green');
+            button.classList.add('red');
+        } else {
+            tmpField.textContent = 'Apagado  🔴';
+            button.textContent = 'Control manual Encender';
+            button.classList.remove('red');
+            button.classList.add('green');
+        }
+    }
 
-    socket.on('acOff', () => {
-        var tmpField = document.getElementById("ac-status");
-        tmpField.textContent = 'Apagado  🔴';
-    });
-
-    socket.on('openWindow', () => {
+    function toggleLux(action = null) {
         var tmpField = document.getElementById("lux-status");
-        tmpField.textContent = 'Abierta  🪟';
-    });
-
-    socket.on('closeWindow', () => {
-        var tmpField = document.getElementById("lux-status");
-        tmpField.textContent = 'Cerrada  🔒';
-    });
+        var button = document.getElementById("lux-toggle-button");
+        if (action) {
+            luxOn = action;
+        } else {
+            luxOn = !luxOn;
+        }
+        if (luxOn) {
+            tmpField.textContent = 'Abierta  🪟';
+            button.textContent = 'Control manual Cerrar';
+            button.classList.remove('green');
+            button.classList.add('red');
+        } else {
+            tmpField.textContent = 'Cerrada  🔒';
+            button.textContent = 'Control manual Abrir';
+            button.classList.remove('red');
+            button.classList.add('green');
+        }
+    }
 </script>
 
 </html>
