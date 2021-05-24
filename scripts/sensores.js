@@ -1,6 +1,8 @@
 const socketio = require("socket.io");
 const MongoClient = require('mongodb').MongoClient;
 
+const { initalizeAgent } = require('./agent');
+
 function initializeSensores(httpServer, port) {
     MongoClient.connect("mongodb://localhost:27017/", { useUnifiedTopology: true }, (err, db) => {
         httpServer.listen(port);
@@ -26,6 +28,7 @@ function initializeSensores(httpServer, port) {
                 io.sockets.emit("updateLux", updateLux);
             });
         });
+        initalizeAgent(io); // Inicializa al agente
     });
     console.log("Sensores ready....");
 }

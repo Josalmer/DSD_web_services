@@ -22,10 +22,10 @@
             <div class="card">
                 <h2>Control</h2>
                 <div class="temp">
-                    <h4><span class="emoji">🌡️</span> Aire acondicionado: <span id="ac-status">Apagado</span></h4>
+                    <h4><span class="emoji">🌡️</span> Aire acondicionado: <span id="ac-status">Apagado  🔴</span></h4>
                 </div>
                 <div class="lux">
-                    <h4><span class="emoji">💡</span> Persiana: <span id="lux-status">Cerrada</span></h4>
+                    <h4><span class="emoji">💡</span> Persiana: <span id="lux-status">Cerrada  🔴</span></h4>
                 </div>
             </div>
         </div>
@@ -39,22 +39,34 @@
     var socket = io();
 
     socket.on('updateTmp', (updatedTmp) => {
-        updateTmpField(updatedTmp.value);
+        var tmpField = document.getElementById("temp-holder");
+        tmpField.textContent = updatedTmp.value + ' º C';
     });
 
     socket.on('updateLux', (updatedLux) => {
-        updateLuxField(updatedLux.value);
+        var luxField = document.getElementById("lux-holder");
+        luxField.textContent = updatedLux.value + ' lux';
     });
 
-    function updateTmpField(newTmpValue) {
-        var tmpField = document.getElementById("temp-holder");
-        tmpField.textContent = newTmpValue + ' lux';
-    }
+    socket.on('acOn', () => {
+        var tmpField = document.getElementById("ac-status");
+        tmpField.textContent = 'Encendido  🟢';
+    });
 
-    function updateLuxField(newLuxValue) {
-        var luxField = document.getElementById("lux-holder");
-        luxField.textContent = newLuxValue + ' lux';
-    }
+    socket.on('acOff', () => {
+        var tmpField = document.getElementById("ac-status");
+        tmpField.textContent = 'Apagado  🔴';
+    });
+
+    socket.on('openWindow', () => {
+        var tmpField = document.getElementById("lux-status");
+        tmpField.textContent = 'Abierta  🪟';
+    });
+
+    socket.on('closeWindow', () => {
+        var tmpField = document.getElementById("lux-status");
+        tmpField.textContent = 'Cerrada  🔒';
+    });
 </script>
 
 </html>
