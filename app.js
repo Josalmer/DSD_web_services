@@ -15,11 +15,17 @@ MongoClient.connect("mongodb://localhost:27017/", { useUnifiedTopology: true }, 
 
     io.sockets.on('connection', (controller) => {
         controller.on('updateTmp', (updateTmp) => {
-            console.log(updateTmp);
+            newLog = {...updateTmp, timeStamp: Date.now()}
+            logs.insertOne(newLog, () => {
+                console.log("Almacenado en DB", newLog);
+            });
             io.sockets.emit("updateTmp", updateTmp);
         });
         controller.on('updateLux', (updateLux) => {
-            console.log(updateLux);
+            newLog = {...updateLux, timeStamp: Date.now()}
+            logs.insertOne(newLog, () => {
+                console.log("Almacenado en DB", newLog);
+            });
             io.sockets.emit("updateLux", updateLux);
         });
     });

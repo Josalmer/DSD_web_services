@@ -43,11 +43,11 @@
     }
 
     function updateTmp(newTmp) {
-        socket.emit('updateTmp', { tmp: newTmp });
+        socket.emit('updateTmp', { type: 'tmp', value: newTmp });
     }
 
     function updateLux(newLux) {
-        socket.emit('updateLux', { lux: newLux });
+        socket.emit('updateLux', { type: 'lux', value: newLux });
     }
 </script>
 

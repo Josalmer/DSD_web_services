@@ -39,11 +39,11 @@
     var socket = io();
 
     socket.on('updateTmp', (updatedTmp) => {
-        updateTmpField(updatedTmp.tmp);
+        updateTmpField(updatedTmp.value);
     });
 
     socket.on('updateLux', (updatedLux) => {
-        updateLuxField(updatedLux.lux);
+        updateLuxField(updatedLux.value);
     });
 
     function updateTmpField(newTmpValue) {
