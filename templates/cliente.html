@@ -65,8 +65,8 @@
     socket.on('closeWindow', () => { toggleLux(false); });
 
     function setClientControls() {
-        document.getElementById("ac-toggle-button").addEventListener("click", () => toggleAc());
-        document.getElementById("lux-toggle-button").addEventListener("click", () => toggleLux());
+        document.getElementById("ac-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'ac' }));
+        document.getElementById("lux-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'lux' }));
     }
 
     function toggleAc(action = null) {
