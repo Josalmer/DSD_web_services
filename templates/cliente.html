@@ -37,6 +37,7 @@
                 </div>
             </div>
         </div>
+        <button id="auto-toggle-button" class="button green" type="button">Activar Modo Auto</button>
     </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
@@ -64,9 +65,14 @@
 
     socket.on('closeWindow', () => { toggleLux(false); });
 
+    socket.on('autoOn', () => { toggleAuto(true); });
+
+    socket.on('autoOff', () => { toggleAuto(false); });
+
     function setClientControls() {
         document.getElementById("ac-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'ac' }));
         document.getElementById("lux-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'lux' }));
+        document.getElementById("auto-toggle-button").addEventListener("click", () => socket.emit('auto', { }));
     }
 
     function toggleAc(action = null) {
@@ -106,6 +112,19 @@
         } else {
             tmpField.textContent = 'Cerrada  🔒';
             button.textContent = 'Control manual Abrir';
+            button.classList.remove('red');
+            button.classList.add('green');
+        }
+    }
+
+    function toggleAuto(status) {
+        var button = document.getElementById("auto-toggle-button");
+        if (status) {
+            button.textContent = 'Desactivar Modo Auto';
+            button.classList.remove('green');
+            button.classList.add('red');
+        } else {
+            button.textContent = 'Activar Modo Auto';
             button.classList.remove('red');
             button.classList.add('green');
         }

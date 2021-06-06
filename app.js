@@ -1,8 +1,8 @@
-const { initializeSensores } = require('./scripts/sensores');
+const Sensors = require('./scripts/sensors');
 
 const port = 8080;
 
 const httpServer = require("./scripts/routes"); // Carga la ruta
-initializeSensores(httpServer, port); // Inicializa sensores
+new Sensors(httpServer, port); // Inicializa sensores
 
 console.log("Servidor inicializado escuchando en " + port);

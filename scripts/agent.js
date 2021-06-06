@@ -42,7 +42,7 @@ class Agent {
                     console.log("AGENTE enciende aire acondicionado");
                     this.acStatus = true;
                     this.sockets.emit("acOn");
-                } else if (newData.value < 24 && this.acStatus) {
+                } else if (newData.value < 27 && this.acStatus) {
                     console.log("AGENTE apaga aire acondicionado");
                     this.acStatus = false;
                     this.sockets.emit("acOff");
@@ -65,7 +65,5 @@ class Agent {
         }
     }
 }
-
-
 
 module.exports = Agent;
