@@ -24,6 +24,8 @@
                 <div class="lux">
                     <h4><span class="emoji">💡</span> Luminosidad: <span id="lux-holder">No hay valor</span></h4>
                 </div>
+                <h2>Tiempo</h2>
+                <div id="weather-wrapper">Sin datos</div>
             </div>
             <div class="card">
                 <h2>Control</h2>
@@ -32,8 +34,12 @@
                     <button id="ac-toggle-button" class="button green" type="button">Control manual Encender</button>
                 </div>
                 <div class="lux">
-                    <h4><span class="emoji">💡</span> Persiana: <span id="lux-status">Cerrada  🔴</span></h4>
+                    <h4><span class="emoji">🪟</span> Persiana: <span id="lux-status">Cerrada  🔴</span></h4>
                     <button id="lux-toggle-button" class="button green" type="button">Control manual Abrir</button>
+                </div>
+                <div class="lamp">
+                    <h4><span class="emoji">💡</span> Lampara: <span id="lamp-status">Apagada  🔴</span></h4>
+                    <button id="lamp-toggle-button" class="button green" type="button">Control manual Encender</button>
                 </div>
             </div>
         </div>
@@ -46,6 +52,7 @@
     document.addEventListener("DOMContentLoaded", () => intializeClient());
     luxOn = false;
     acOn = false;
+    lampOn = false;
     lat = 37.167930;
     long = -3.597777;
 
@@ -63,6 +70,10 @@
 
     socket.on('acOff', () => { toggleAc(false); });
 
+    socket.on('lampOn', () => { toggleLamp(true); });
+
+    socket.on('lampOff', () => { toggleLamp(false); });
+
     socket.on('openWindow', () => { toggleLux(true); });
 
     socket.on('closeWindow', () => { toggleLux(false); });
@@ -70,6 +81,8 @@
     socket.on('autoOn', () => { toggleAuto(true); });
 
     socket.on('autoOff', () => { toggleAuto(false); });
+
+    socket.on('weather', weather => { printWeather(weather); });
 
     function intializeClient() {
         setClientLocation();
@@ -79,6 +92,7 @@
     function setClientControls() {
         document.getElementById("ac-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'ac' }));
         document.getElementById("lux-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'lux' }));
+        document.getElementById("lamp-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'lamp' }));
         document.getElementById("auto-toggle-button").addEventListener("click", () => autoRequest());
     }
 
@@ -124,6 +138,27 @@
         }
     }
 
+    function toggleLamp(action = null) {
+        var tmpField = document.getElementById("lamp-status");
+        var button = document.getElementById("lamp-toggle-button");
+        if (action) {
+            lampOn = action;
+        } else {
+            lampOn = !lampOn;
+        }
+        if (lampOn) {
+            tmpField.textContent = 'Encendida  🟢';
+            button.textContent = 'Control manual Apagar';
+            button.classList.remove('green');
+            button.classList.add('red');
+        } else {
+            tmpField.textContent = 'Apagada  🔴';
+            button.textContent = 'Control manual Encender';
+            button.classList.remove('red');
+            button.classList.add('green');
+        }
+    }
+
     function setClientLocation() {
         if (window.navigator.geolocation) {
             window.navigator.geolocation.getCurrentPosition((geolocation) => {
@@ -151,6 +186,11 @@
             button.classList.remove('red');
             button.classList.add('green');
         }
+    }
+
+    function printWeather(weather) {
+        var weatherWrapper = document.getElementById("weather-wrapper");
+        weatherWrapper.textContent = weather.description;
     }
 </script>
 

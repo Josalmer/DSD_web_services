@@ -53,8 +53,9 @@ class Sensors {
         console.log("Sensores ready....");
     }
 
-    autoOn(coords) {
+    async autoOn(coords) {
         this.io.sockets.emit("autoOn", {});
+        await this.loadMeteo(coords);
         this.interval = setInterval(async () => {
             await this.loadMeteo(coords);
         }, 10000);
@@ -66,12 +67,15 @@ class Sensors {
     }
 
     async loadMeteo(coords) {
-        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.long}&appid=${this.apiKey}`;
+        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.long}&lang=es&appid=${this.apiKey}`;
         try {
             const response = await axios.get(url);
             let tmp = (response.data.main.temp - KELVINCELSIUS).toFixed(2);
+            let weather = response.data.weather[0];
             let newValue = { type: 'tmp', value: tmp };
             this.io.sockets.emit('updateTmp', newValue);
+            this.io.sockets.emit('weather', weather);
+            this.agent.updateOutside(weather);
             this.agent.manage(newValue);
         } catch (error) {
             console.log(error);
