@@ -39,10 +39,10 @@ class Sensors {
                     });
                     this.io.sockets.emit("updateLux", updateLux);
                 });
-                controller.on('auto', () => {
+                controller.on('auto', coords => {
                     this.auto = !this.auto;
                     if (this.auto) {
-                        this.autoOn();
+                        this.autoOn(coords);
                     } else {
                         this.autoOff();
                     }
@@ -53,11 +53,11 @@ class Sensors {
         console.log("Sensores ready....");
     }
 
-    autoOn() {
+    autoOn(coords) {
         this.io.sockets.emit("autoOn", {});
         this.interval = setInterval(async () => {
-            await this.loadMeteo();
-        }, 4000);
+            await this.loadMeteo(coords);
+        }, 10000);
     }
     
     autoOff() {
@@ -65,14 +65,11 @@ class Sensors {
         clearInterval(this.interval);
     }
 
-    async loadMeteo() {
-        let lat = 37.167930;
-        let lon = -3.597777;
-        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}`;
+    async loadMeteo(coords) {
+        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.long}&appid=${this.apiKey}`;
         try {
             const response = await axios.get(url);
             let tmp = (response.data.main.temp - KELVINCELSIUS).toFixed(2);
-            console.log("requested tmp:", tmp, 'ºC')
             let newValue = { type: 'tmp', value: tmp };
             this.io.sockets.emit('updateTmp', newValue);
             this.agent.manage(newValue);

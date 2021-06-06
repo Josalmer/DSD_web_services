@@ -43,9 +43,11 @@
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
     var socket = io();
-    document.addEventListener("DOMContentLoaded", () => setClientControls());
+    document.addEventListener("DOMContentLoaded", () => intializeClient());
     luxOn = false;
     acOn = false;
+    lat = 37.167930;
+    long = -3.597777;
 
     socket.on('updateTmp', (updatedTmp) => {
         var tmpField = document.getElementById("temp-holder");
@@ -69,10 +71,15 @@
 
     socket.on('autoOff', () => { toggleAuto(false); });
 
+    function intializeClient() {
+        setClientLocation();
+        setClientControls();
+    }
+
     function setClientControls() {
         document.getElementById("ac-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'ac' }));
         document.getElementById("lux-toggle-button").addEventListener("click", () => socket.emit('clientAction', { toggled: 'lux' }));
-        document.getElementById("auto-toggle-button").addEventListener("click", () => socket.emit('auto', { }));
+        document.getElementById("auto-toggle-button").addEventListener("click", () => autoRequest());
     }
 
     function toggleAc(action = null) {
@@ -115,6 +122,22 @@
             button.classList.remove('red');
             button.classList.add('green');
         }
+    }
+
+    function setClientLocation() {
+        if (window.navigator.geolocation) {
+            window.navigator.geolocation.getCurrentPosition((geolocation) => {
+                console.log(geolocation);
+                lat = geolocation.coords.latitude;
+                long = geolocation.coords.longitude;
+            })
+        } else {
+            console.log("No se pudo obtener la ubicación, por defecto Granada");
+        }
+    }
+
+    function autoRequest() {
+        socket.emit('auto', {lat: lat, long: long});
     }
 
     function toggleAuto(status) {
